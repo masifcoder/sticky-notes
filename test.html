@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>closest</title>
+    <style>
+        .card {
+            background-color: red;
+            padding: 20px;
+            width: 300px;
+            margin: 20px;
+        }
+        .shop-item {
+            border: 2px dashed red;
+            padding: 20px;
+            width: 400px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- closest example -->
+    <div class="card">
+        <div class="body">
+            <button class="delete-btn">Delete 1</button>
+        </div>
+    </div>
+
+     <div class="card">
+        <div class="body">
+            <button class="delete-btn">Delete 2</button>
+        </div>
+    </div>
+
+    <!-- find example -->
+    <div class="shop-item">
+        <div class="pricebox">
+            <span class="price">$10</span>
+        </div>
+        <span class="name">Shoes</span>
+        <span class="price">$10</span>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+        <script>
+            $(document).ready(function(){
+
+                $(".delete-btn").on("click", function(){
+
+                    $(this).closest(".card").remove();
+
+                });
+
+
+                $(".shop-item").find(".price").css("color", "red");
+
+            })
+        </script>
+</body>
+
+</html>
