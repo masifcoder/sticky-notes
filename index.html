@@ -47,7 +47,6 @@
 
         <div class="d-flex justify-content-between align-items-center border-bottom py-3 my-3">
             <h1>Sticky Notes Wall</h1>
-            <button id="deleteAll">Delete All Notes</button>
             <span class="addNoteBtn" data-bs-toggle="modal" data-bs-target="#sticyNoteForm"><i
                     class="bi bi-plus-lg fs-1"></i></span>
         </div>
@@ -96,12 +95,19 @@
 
         $(document).ready(function () {
 
+            //get localStorage saved data
+            let notesString = localStorage.getItem("notes");
+            //  console.log('at load', notesString);
 
-            //set old data
-            let oldData = localStorage.getItem("notes");
+            let notes = []; // single source of truth
+            if (notesString !== null) {
+                notes = JSON.parse(notesString);
+            }
 
-            console.log(oldData)
-            $("#notesRow").html(oldData);
+            // show on first load of application
+            displayNotes();
+
+            // console.log('at load', notes);
 
 
             // create sticky note
@@ -111,15 +117,44 @@
                 let noteTitle = $("#noteTitle").val();
                 let noteDesc = $("#noteDesc").val();
 
-                if (noteTitle != "" && noteDesc != "") {
+                let notesObj = {
+                    id: Date.now(),
+                    title: noteTitle,
+                    desc: noteDesc
+                }
+                console.log(notesObj);
 
-                    // creating note html
+                notes.push(notesObj);
+
+                // save data into localStorage
+                localStorage.setItem("notes", JSON.stringify(notes));
+
+                // display notes
+                displayNotes();
+
+            });
+
+
+            // delete sticky note
+            $(document).on("click", ".delNoteBtn", function () {
+
+                $(this).closest(".stickyParent").remove();
+
+            });
+
+
+            // display notes
+            function displayNotes() {
+
+                $("#notesRow").html("");
+
+                notes.forEach(function (note) {
                     let noteHtml = `
                         <div class="col-md-3 my-3 stickyParent">
                             <div class="card border-0 shadow-sm sticyNote">
                                 <div class="card-body">
-                                <h5 class="card-title">${noteTitle}</h5>
-                                <p class="card-text">${noteDesc}</p>
+                                <h5 class="card-title">${note.title}</h5>
+                                <p class="card-text">${note.desc}</p>
                                 <a href="#" class="btn btn-danger btn-sm delNoteBtn">delete</a>
                                 </div>
                             </div>
@@ -129,33 +164,17 @@
                     // appending child
                     $("#notesRow").append(noteHtml);
 
-                    // store in local storage
-                    localStorage.setItem("notes", $("#notesRow").html() )
-
-                    // empty inputs
-                    $("#noteTitle").val("");
-                    $("#noteDesc").val("");
-
-                    // close modal
-                    $('#sticyNoteForm').modal('hide');
-
-                }
-
-            });
+                });
 
 
-            // delete sticky note
-            $(document).on("click", ".delNoteBtn", function(){
+                // empty inputs
+                $("#noteTitle").val("");
+                $("#noteDesc").val("");
 
-                 $(this).closest(".stickyParent").remove();
+                // close modal
+                $('#sticyNoteForm').modal('hide');
+            }
 
-            });
-
-
-            $("#deleteAll").on("click", function(){
-                localStorage.clear();
-                window.location.reload();
-            })
 
 
 
