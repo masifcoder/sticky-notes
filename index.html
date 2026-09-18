@@ -122,7 +122,7 @@
                     title: noteTitle,
                     desc: noteDesc
                 }
-                console.log(notesObj);
+                // console.log(notesObj);
 
                 notes.push(notesObj);
 
@@ -137,8 +137,22 @@
 
             // delete sticky note
             $(document).on("click", ".delNoteBtn", function () {
+                
+                let id = $(this).closest(".stickyParent").data('id');
 
-                $(this).closest(".stickyParent").remove();
+                let notesFiltered = notes.filter( function(element){
+                        if( element.id != id ) {
+                            return element;
+                        }
+                });
+
+                // save data into localStorage
+                localStorage.setItem("notes", JSON.stringify(notesFiltered));
+                
+                // removing from ui
+                $(this).closest(".stickyParent").slideUp(400, function(){
+                     $(this).closest(".stickyParent").remove();
+                })
 
             });
 
@@ -150,7 +164,7 @@
 
                 notes.forEach(function (note) {
                     let noteHtml = `
-                        <div class="col-md-3 my-3 stickyParent">
+                        <div class="col-md-3 my-3 stickyParent" data-id=${note.id}>
                             <div class="card border-0 shadow-sm sticyNote">
                                 <div class="card-body">
                                 <h5 class="card-title">${note.title}</h5>
@@ -174,9 +188,6 @@
                 // close modal
                 $('#sticyNoteForm').modal('hide');
             }
-
-
-
 
         });
 
